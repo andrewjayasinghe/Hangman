@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hangman</title>
+<link rel='stylesheet' href='hangman.css'>
+</head>
+<body>
+    
+    <div id="unknown"></div>
+    <h2 id="guesses"></h2>
+    <div id="word"></div>
+    <div id="test"></div><br><br>
+    <input type="button" onClick="history.go(0)" VALUE="Reset score" id="refresh">
+
+        <script>
+
+
+        let alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", 
+        "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+        let word_bank = ["computer", "python", "mahdad", "background", "committee", "popcorn", "technology"];
+        let guess_attempts = 7;
+        let random_word =  Math.round(Math.random() * (word_bank.length - 1))
+        
+        function createLetters() {
+            for(let i=0; i<alphabet.length; i++) {
+                let letter = document.createElement("button");
+                document.getElementById("test").appendChild(letter);
+                letter.style.fontSize = "5vw";
+                letter.style.marginBottom = "1vh";
+                letter.style.marginRight = "2vw";
+                letter.innerHTML = alphabet[i];
+                letter.style.width = "15vw";
+                letter.style.height = "15vh";
+                letter.style.backgroundColor = "yellow";
+                letter.style.color = "black";
+                letter.style.borderRadius = "16px"
+                letter.onclick = function() {
+                    if (guess_attempts > 0) {
+                        if (word_bank[random_word].includes(alphabet[i])) {
+                            let letter_clicked = alphabet[i];
+
+                            let ind = word_bank[random_word].indexOf(letter_clicked)
+                            document.getElementById(letter_clicked + ind).innerHTML = letter_clicked;
+
+                            if ((word_bank[random_word].indexOf(letter_clicked, ind + 1)) != -1) {
+                                let ind2 = word_bank[random_word].indexOf(letter_clicked, ind + 1)
+                                document.getElementById(letter_clicked + ind2).innerHTML = letter_clicked;
+                            }
+
+                            letter.style.backgroundColor = "green";
+                        } else {
+                            letter.style.backgroundColor = "red";
+                            if (guess_attempts > 0) {
+                                guess_attempts -= 1;
+                            } else {
+                                guess_attempts = 0;
+                            }
+                            document.getElementById("guesses").innerHTML = "Guesses Remaining: " + guess_attempts;
+                        }
+                    }
+                };
+            }
+        }
+
+
+
+
+        let unknown_words = []
+        function guessing_word(){
+            let exists = word_bank[random_word]
+            for(let i=0; i<word_bank[random_word].length; i++){
+                let unknown = document.createElement("span");
+                document.getElementById("unknown").appendChild(unknown);
+
+                let index = exists.indexOf(word_bank[random_word][i]) + 1;
+                if (exists.indexOf(word_bank[random_word][i], index) != -1) {
+                    unknown.setAttribute("id", word_bank[random_word][i] + i);
+                } else {
+                    unknown.setAttribute("id", word_bank[random_word][i] + i);
+                }
+
+
+                unknown_words.push(word_bank[random_word][i]);
+                unknown.innerHTML = "_";
+                unknown.style.marginRight = "20px";
+
+            }
+        }
+        // setInterval(function() {
+        //     document.getElementById("test").style.width = (window.innerWidth - 150) +"px";
+        //     }, 10)
+        // document.getElementById("test").style.width = "33%"
+        document.getElementById("guesses").innerHTML = "Guesses Remaining: " + guess_attempts;
+        createLetters();
+        guessing_word();
+
+        
+    </script>
+
+</body>
+</html>
